@@ -47,44 +47,44 @@
     },
     {
       "part1": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "602",
         "attempts": [],
-        "time": null
+        "time": 1.729
       },
       "part2": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "891",
         "attempts": [],
-        "time": null
+        "time": 2.4151
       }
     },
     {
       "part1": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "BSDMQFLSP",
         "attempts": [],
-        "time": null
+        "time": 3.6329
       },
       "part2": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "PGSQBFLDP",
         "attempts": [],
-        "time": null
+        "time": 2.2143
       }
     },
     {
       "part1": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "1965",
         "attempts": [],
-        "time": null
+        "time": 3.0558
       },
       "part2": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "2773",
         "attempts": [],
-        "time": null
+        "time": 1.7096
       }
     },
     {
