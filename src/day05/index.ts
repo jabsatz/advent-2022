@@ -1,5 +1,5 @@
 import run from "aocrunner";
-import lodash from "lodash";
+import _ from "lodash";
 
 type Status = Record<number, string[]>;
 
@@ -7,7 +7,7 @@ const parseInput = (rawInput: string) => {
   const [rawStatus, rawInstructions] = rawInput.split("\n\n");
 
   const status: Status = {};
-  lodash.forEachRight(rawStatus.split("\n"), (line) => {
+  _.forEachRight(rawStatus.split("\n"), (line) => {
     if (line.match(/\d/)) {
       [...line.matchAll(/\d/g)].forEach((match) => {
         status[Number(match[0])] = [];
@@ -50,7 +50,7 @@ const part1 = (rawInput: string) => {
   }, status);
 
   return Object.values(finalStatus)
-    .map((column) => lodash.last(column))
+    .map((column) => _.last(column))
     .join("");
 };
 
@@ -70,7 +70,7 @@ const part2 = (rawInput: string) => {
   }, status);
 
   return Object.values(finalStatus)
-    .map((column) => lodash.last(column))
+    .map((column) => _.last(column))
     .join("");
 };
 

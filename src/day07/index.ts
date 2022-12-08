@@ -1,5 +1,5 @@
 import run from "aocrunner";
-import lodash from "lodash";
+import _ from "lodash";
 
 type File = { type: "file"; size: number };
 
@@ -38,7 +38,7 @@ const parseInput = (rawInput: string) => {
         path.pop();
       } else {
         path.push(match[0]);
-        lodash.set(structure, path, { type: "dir", content: {} });
+        _.set(structure, path, { type: "dir", content: {} });
         path.push("content");
       }
     } else if (line.match(/^\d+/)) {
@@ -46,7 +46,7 @@ const parseInput = (rawInput: string) => {
       if (isNaN(size)) {
         throw new Error(`cannot parse size for line ${line}`);
       }
-      lodash.set(structure, [...path, match[0]], { type: "file", size });
+      _.set(structure, [...path, match[0]], { type: "file", size });
     }
   });
 
@@ -69,7 +69,7 @@ const calculateSizes = (structure: Tree): SizedTree => {
       newStructure[key] = {
         type: "dir",
         content: sizedContent,
-        size: lodash.sum(Object.values(sizedContent).map((val) => val.size)),
+        size: _.sum(Object.values(sizedContent).map((val) => val.size)),
       };
     } else {
       newStructure[key] = value;

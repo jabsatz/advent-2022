@@ -1,5 +1,5 @@
 import run from "aocrunner";
-import lodash from "lodash";
+import _ from "lodash";
 
 const parseInput = (rawInput: string) => rawInput.split("\n");
 
@@ -22,12 +22,12 @@ const part1 = (rawInput: string) => {
     }
   });
 
-  return lodash.sum(repeatedItems);
+  return _.sum(repeatedItems);
 };
 
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
-  const groups = lodash.chunk(input, 3);
+  const groups = _.chunk(input, 3);
   const repeatedItems = groups.map((group) => {
     for (let char of group[0]) {
       if (group[1].includes(char) && group[2].includes(char)) {
@@ -35,7 +35,7 @@ const part2 = (rawInput: string) => {
       }
     }
   });
-  return lodash.sum(repeatedItems);
+  return _.sum(repeatedItems);
 };
 
 run({

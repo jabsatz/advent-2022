@@ -1,10 +1,10 @@
 import run from "aocrunner";
-import lodash from "lodash";
+import _ from "lodash";
 
 const findMarker = (input: string, size: number) => {
   let currentMarker = input.substring(0, size).split("");
   for (let i = size; i < input.length; i++) {
-    if (lodash.uniq(currentMarker).length === currentMarker.length) {
+    if (_.uniq(currentMarker).length === currentMarker.length) {
       return i;
     }
     currentMarker = [...currentMarker.slice(1), input[i]];

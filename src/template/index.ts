@@ -1,5 +1,5 @@
 import run from "aocrunner";
-import lodash from "lodash";
+import _ from "lodash";
 
 const parseInput = (rawInput: string) => rawInput;
 
