@@ -1,29 +1,24 @@
 import run from "aocrunner";
 import _ from "lodash";
-import { Chart, Coordinates } from "../utils/index.js";
+import { Chart, Vector2 } from "../utils/index.js";
 
 const parseInput = (rawInput: string) => new Chart(rawInput);
 
 const getVisibleTrees = (chart: Chart) => {
   let visibleTrees: string[] = [];
 
-  chart.forEachPosition(([x, y]) => {
-    const currentTree = chart.get([x, y]);
-    const currentKey = chart.keyFrom([x, y]);
-    const adjacents = chart.getAdjacents([x, y]);
+  chart.forEachPosition((pos) => {
+    const currentTree = chart.get(pos);
+    const currentKey = pos.key;
+    const adjacents = chart.getAdjacents(pos);
 
     if (adjacents.length < 4) {
       // it's an edge
       visibleTrees.push(currentKey);
     } else {
-      const visibleFromSomeSide = adjacents.some(([x2, y2]) => {
-        let direction: Coordinates = [0, 0];
-        if (x2 !== x) {
-          direction[0] = x > x2 ? -1 : 1;
-        } else if (y2 !== y) {
-          direction[1] = y > y2 ? -1 : 1;
-        }
-        let position: Coordinates = [x2, y2];
+      const visibleFromSomeSide = adjacents.some((pos2) => {
+        const direction = pos2.sub(pos);
+        let position = pos2.clone();
         while (true) {
           if (!chart.isInChart(position)) {
             return true;
@@ -31,8 +26,7 @@ const getVisibleTrees = (chart: Chart) => {
           if (chart.get(position) >= currentTree) {
             return false;
           }
-          position[0] += direction[0];
-          position[1] += direction[1];
+          position = position.add(direction);
         }
       });
       if (visibleFromSomeSide) {
@@ -49,8 +43,6 @@ const part1 = (rawInput: string) => {
 
   const visibleTrees = getVisibleTrees(chart);
 
-  chart.logChart((coords) => visibleTrees.includes(chart.keyFrom(coords)));
-
   return visibleTrees.length;
 };
 
@@ -60,18 +52,13 @@ const part2 = (rawInput: string) => {
   const visibleTrees = getVisibleTrees(chart);
 
   const scenicScores = visibleTrees.map((key) => {
-    const [x, y] = chart.coordinateFromKey(key);
-    const currentTree = chart.get([x, y]);
-    const adjacents = chart.getAdjacents([x, y]);
+    const pos = new Vector2(key);
+    const currentTree = chart.get(pos);
+    const adjacents = chart.getAdjacents(pos);
     if (adjacents.length < 4) return 0;
-    return adjacents.reduce((score, [x2, y2]) => {
-      let direction: Coordinates = [0, 0];
-      if (x2 !== x) {
-        direction[0] = x > x2 ? -1 : 1;
-      } else if (y2 !== y) {
-        direction[1] = y > y2 ? -1 : 1;
-      }
-      let position: Coordinates = [x2, y2];
+    return adjacents.reduce((score, pos2) => {
+      const direction = pos2.sub(pos);
+      let position = pos2.clone();
       let sideScore = 0;
       while (true) {
         if (!chart.isInChart(position)) {
@@ -81,8 +68,7 @@ const part2 = (rawInput: string) => {
           return score * (sideScore + 1);
         }
         sideScore += 1;
-        position[0] += direction[0];
-        position[1] += direction[1];
+        position = position.add(direction);
       }
     }, 1);
   });

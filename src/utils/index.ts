@@ -32,75 +32,112 @@
 import _ from "lodash";
 import chalk from "chalk";
 
-export type Coordinates = [number, number];
+export class Vector2 {
+  x: number;
+  y: number;
+
+  constructor(input: string | [number, number]) {
+    let x, y;
+    if (typeof input === "string") {
+      [x, y] = input.split(", ").map((n) => Number(n));
+    } else {
+      [x, y] = input;
+    }
+    this.x = x;
+    this.y = y;
+  }
+
+  static ZERO = new Vector2([0, 0]);
+  static RIGHT = new Vector2([1, 0]);
+  static LEFT = new Vector2([-1, 0]);
+  static DOWN = new Vector2([0, 1]);
+  static UP = new Vector2([0, -1]);
+
+  get key() {
+    return `${this.x}, ${this.y}`;
+  }
+
+  get length() {
+    return Math.sqrt(this.x ** 2 + this.y ** 2);
+  }
+
+  clone = () => new Vector2([this.x, this.y]);
+
+  add = (_vector2: Vector2) =>
+    new Vector2([this.x + _vector2.x, this.y + _vector2.y]);
+
+  sub = (_vector2: Vector2) => this.add(_vector2.mul(-1));
+
+  mul = (n: number) => new Vector2([this.x * n, this.y * n]);
+
+  distanceTo = (_vector2: Vector2) => this.sub(_vector2).length;
+
+  normalized = () => new Vector2([this.x / this.length, this.y / this.length]);
+
+  print = () => console.log(`[${this.key}]`);
+}
 
 export class Chart {
   rawChart: number[][];
-  boundaries: Coordinates;
+  boundaries: Vector2;
 
   constructor(input: string) {
     this.rawChart = input.split("\n").map((line) => line.split("").map(Number));
-    this.boundaries = [this.rawChart[0].length - 1, this.rawChart.length - 1];
+    this.boundaries = new Vector2([
+      this.rawChart[0].length - 1,
+      this.rawChart.length - 1,
+    ]);
   }
 
-  keyFrom = ([x, y]: Coordinates) => `${x}, ${y}`;
-  coordinateFromKey = (key: string) =>
-    key.split(", ").map((n) => Number(n)) as Coordinates;
-
-  get = (pos: Coordinates | string) => {
-    let x, y;
-    if (_.isArray(pos)) {
-      [x, y] = pos;
-    } else if (_.isString(pos)) {
-      [x, y] = pos.split(", ").map(Number);
+  get = (pos: Vector2) => {
+    if (!this.isInChart(pos)) {
+      throw new Error(`position [${pos.key}] is not in chart`);
     }
-    if (_.isUndefined(x) || _.isUndefined(y)) {
-      throw new Error(`Could not parse position ${pos}`);
-    }
-    return this.rawChart[y][x];
+    return this.rawChart[pos.y][pos.x];
   };
 
-  set = ([x, y]: Coordinates, value: number) => {
-    this.rawChart[y][x] = value;
+  set = (pos: Vector2, value: number) => {
+    this.rawChart[pos.y][pos.x] = value;
   };
 
-  isInChart = ([x, y]: Coordinates) =>
-    x >= 0 && x <= this.boundaries[0] && y >= 0 && y <= this.boundaries[1];
+  isInChart = (pos: Vector2) =>
+    pos.x >= 0 &&
+    pos.x <= this.boundaries.x &&
+    pos.y >= 0 &&
+    pos.y <= this.boundaries.y;
 
-  getAdjacents = ([x, y]: Coordinates) =>
+  getAdjacents = (pos: Vector2) =>
     [
-      [x - 1, y] as Coordinates,
-      [x + 1, y] as Coordinates,
-      [x, y - 1] as Coordinates,
-      [x, y + 1] as Coordinates,
+      new Vector2([pos.x - 1, pos.y]),
+      new Vector2([pos.x + 1, pos.y]),
+      new Vector2([pos.x, pos.y - 1]),
+      new Vector2([pos.x, pos.y + 1]),
     ].filter((coords) => this.isInChart(coords));
 
-  getDistance = ([x1, y1]: Coordinates, [x2, y2]: Coordinates) =>
-    Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
-
-  forEachPosition(predicate: (coords: Coordinates) => any) {
+  forEachPosition(predicate: (coords: Vector2) => any) {
     for (let y = 0; y < this.rawChart.length; y++) {
       for (let x = 0; x < this.rawChart[y].length; x++) {
-        predicate([x, y]);
+        predicate(new Vector2([x, y]));
       }
     }
   }
 
-  everyPosition(predicate: (coords: Coordinates) => boolean) {
+  everyPosition(predicate: (coords: Vector2) => boolean) {
     for (let y = 0; y < this.rawChart.length; y++) {
       for (let x = 0; x < this.rawChart[y].length; x++) {
-        if (!predicate([x, y])) return false;
+        if (!predicate(new Vector2([x, y]))) return false;
       }
     }
     return true;
   }
 
-  logChart = (predicate: (coords: Coordinates) => boolean = () => false) => {
+  logChart = (predicate: (coords: Vector2) => boolean = () => false) => {
     this.forEachPosition((pos) => {
-      if (pos[0] === 0) process.stdout.write("\n");
+      if (pos.x === 0) process.stdout.write("\n");
       if (predicate(pos))
         process.stdout.write(chalk.bgGreen(chalk.black(`${this.get(pos)}`)));
       else process.stdout.write(`${this.get(pos)}`);
     });
+    process.stdout.write("\n");
   };
 }
