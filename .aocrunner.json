@@ -92,13 +92,13 @@
         "solved": true,
         "result": "919137",
         "attempts": [],
-        "time": 5.0253
+        "time": 4.5324
       },
       "part2": {
         "solved": true,
         "result": "2877389",
         "attempts": [],
-        "time": 2.5719
+        "time": 2.4097
       }
     },
     {
@@ -122,27 +122,27 @@
         "solved": true,
         "result": "6357",
         "attempts": [],
-        "time": 32.1759
+        "time": 36.2684
       },
       "part2": {
         "solved": true,
         "result": "2627",
         "attempts": [],
-        "time": 66.0208
+        "time": 68.7334
       }
     },
     {
       "part1": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "16880",
         "attempts": [],
-        "time": null
+        "time": 0.0802
       },
       "part2": {
         "solved": false,
-        "result": null,
+        "result": "###..#..#..##..####..##....##.###..###..\n#..#.#.#..#..#....#.#..#....#.#..#.#..#.\n#..#.##...#..#...#..#..#....#.###..#..#.\n###..#.#..####..#...####....#.#..#.###..\n#.#..#.#..#..#.#....#..#.#..#.#..#.#.#..\n#..#.#..#.#..#.####.#..#..##..###..#..#.",
         "attempts": [],
-        "time": null
+        "time": 2.6841
       }
     },
     {

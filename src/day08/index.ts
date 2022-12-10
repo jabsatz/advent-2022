@@ -1,10 +1,10 @@
 import run from "aocrunner";
 import _ from "lodash";
-import { Chart, Vector2 } from "../utils/index.js";
+import { Chart2, Vector2 } from "../utils/index.js";
 
-const parseInput = (rawInput: string) => new Chart(rawInput);
+const parseInput = (rawInput: string) => new Chart2(rawInput);
 
-const getVisibleTrees = (chart: Chart) => {
+const getVisibleTrees = (chart: Chart2) => {
   let visibleTrees: string[] = [];
 
   chart.forEachPosition((pos) => {

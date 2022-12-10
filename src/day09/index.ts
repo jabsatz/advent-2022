@@ -1,6 +1,6 @@
 import run from "aocrunner";
 import _, { tail } from "lodash";
-import { Vector2, Chart } from "../utils/index.js";
+import { Vector2, Chart2 } from "../utils/index.js";
 
 type Direction = "U" | "R" | "D" | "L";
 
