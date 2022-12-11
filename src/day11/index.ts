@@ -43,12 +43,16 @@ const parseInput = (rawInput: string) =>
     } as Monkey;
   });
 
-const part1 = (rawInput: string) => {
-  let monkeys = parseInput(rawInput);
-  for (let i = 0; i < 20; i++) {
+const processMonkeys = (
+  initialMonkeys: Monkey[],
+  loops: number,
+  worryLimiter: (item: number) => number,
+) => {
+  let monkeys = initialMonkeys;
+  for (let i = 0; i < loops; i++) {
     monkeys.forEach((monkey) => {
       monkey.items.forEach((item) => {
-        const newWorryLevel = Math.floor(monkey.operation(item) / 3);
+        const newWorryLevel = worryLimiter(monkey.operation(item));
         const target =
           newWorryLevel % monkey.modulo === 0
             ? monkey.targetIfTrue
@@ -68,30 +72,18 @@ const part1 = (rawInput: string) => {
   );
 };
 
-const part2 = (rawInput: string) => {
-  let monkeys = parseInput(rawInput);
-  const greatModulo = monkeys.reduce((prev, curr) => prev * curr.modulo, 1);
-  for (let i = 0; i < 10000; i++) {
-    monkeys.forEach((monkey) => {
-      monkey.items.forEach((item) => {
-        const newWorryLevel = monkey.operation(item) % greatModulo;
-        const target =
-          newWorryLevel % monkey.modulo === 0
-            ? monkey.targetIfTrue
-            : monkey.targetIfFalse;
-        monkeys[target].items.push(newWorryLevel);
-        monkey.inspections++;
-      });
-      monkey.items = [];
-    });
-  }
+const part1 = (rawInput: string) => {
+  const initialMonkeys = parseInput(rawInput);
+  return processMonkeys(initialMonkeys, 20, (item) => Math.floor(item / 3));
+};
 
-  return _.multiply(
-    ...(monkeys
-      .map((monkey) => monkey.inspections)
-      .sort((a, b) => (a < b ? 1 : -1))
-      .slice(0, 2) as [number, number]),
+const part2 = (rawInput: string) => {
+  const initialMonkeys = parseInput(rawInput);
+  const greatModulo = initialMonkeys.reduce(
+    (prev, curr) => prev * curr.modulo,
+    1,
   );
+  return processMonkeys(initialMonkeys, 10_000, (item) => item % greatModulo);
 };
 
 run({
