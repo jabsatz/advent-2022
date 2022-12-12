@@ -21,6 +21,7 @@ export class Vector2 {
   static LEFT = new Vector2([-1, 0]);
   static DOWN = new Vector2([0, 1]);
   static UP = new Vector2([0, -1]);
+  static DIRECTIONS = [this.UP, this.RIGHT, this.DOWN, this.LEFT];
 
   get key() {
     return `${this.x}, ${this.y}`;
@@ -47,11 +48,11 @@ export class Vector2 {
 }
 
 export class Chart2 {
-  rawChart: number[][];
+  rawChart: string[][];
   boundaries: Vector2;
 
   constructor(input: string) {
-    this.rawChart = input.split("\n").map((line) => line.split("").map(Number));
+    this.rawChart = input.split("\n").map((line) => line.split(""));
     this.boundaries = new Vector2([
       this.rawChart[0].length - 1,
       this.rawChart.length - 1,
@@ -65,7 +66,7 @@ export class Chart2 {
     return this.rawChart[pos.y][pos.x];
   };
 
-  set = (pos: Vector2, value: number) => {
+  set = (pos: Vector2, value: string) => {
     this.rawChart[pos.y][pos.x] = value;
   };
 
@@ -76,12 +77,9 @@ export class Chart2 {
     pos.y <= this.boundaries.y;
 
   getAdjacents = (pos: Vector2) =>
-    [
-      new Vector2([pos.x - 1, pos.y]),
-      new Vector2([pos.x + 1, pos.y]),
-      new Vector2([pos.x, pos.y - 1]),
-      new Vector2([pos.x, pos.y + 1]),
-    ].filter((coords) => this.isInChart(coords));
+    Vector2.DIRECTIONS.map((direction) => pos.add(direction)).filter((coords) =>
+      this.isInChart(coords),
+    );
 
   forEachPosition(predicate: (coords: Vector2) => any) {
     for (let y = 0; y < this.rawChart.length; y++) {
@@ -109,4 +107,60 @@ export class Chart2 {
     });
     process.stdout.write("\n");
   };
+}
+
+export type Edge = {
+  from: string;
+  to: string;
+  weight: number;
+};
+
+export type Node = {
+  key: string;
+  edges: Edge[];
+};
+
+export class DirectedNodeGraph {
+  nodes: Record<string, Node>;
+
+  constructor() {
+    this.nodes = {};
+  }
+
+  addNode(key: string) {
+    this.nodes[key] = { key, edges: [] };
+  }
+
+  addEdge(from: string, to: string, weight = 1) {
+    if (!this.nodes[from]) {
+      this.addNode(from);
+    }
+    if (!this.nodes[to]) {
+      this.addNode(to);
+    }
+    this.nodes[from].edges.push({ from: from, to: to, weight });
+  }
+}
+
+export class BidirectedNodeGraph {
+  nodes: Record<string, Node>;
+
+  constructor() {
+    this.nodes = {};
+  }
+
+  addNode(key: string) {
+    this.nodes[key] = { key, edges: [] };
+  }
+
+  addEdge(node1: string, node2: string, weight = 1) {
+    if (!this.nodes[node1]) {
+      this.addNode(node1);
+    }
+    if (!this.nodes[node2]) {
+      this.addNode(node2);
+    }
+    this.nodes[node1].edges.push({ from: node1, to: node2, weight });
+    this.nodes[node2].edges.push({ from: node2, to: node1, weight });
+  }
 }
